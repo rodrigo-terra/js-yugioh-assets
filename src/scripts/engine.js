@@ -14,6 +14,12 @@ const state = {
     player: document.getElementById("player-field-card"),
     computer: document.getElementById("computer-field-card"),
   },
+  playerSides: {
+    player1: "player-cards",
+    player1BOX: document.querySelector("#player-cards"),
+    computer: "computer-cards",
+    computerBOX: document.querySelector("#computer-cards"),
+  },
   actions: {
     button: document.getElementById("next-duel"),
   },
@@ -58,6 +64,15 @@ async function getRandomCardId() {
   return cardData[randomIndex].id;
 }
 
+async function removeAllCardsImages() {
+  let { computerBOX, player1BOX } = state.playerSides;
+  let imgElements = computerBOX.querySelector("img");
+  imgElements.forEach((img) => img.remove());
+
+  imgElements = player1BOX.querySelector("img");
+  imgElements.forEach((img) => img.remove());
+}
+
 async function drawSelectCard(index) {
   state.cardSprite.avatar.src = cardData[index].img;
   state.cardSprite.name.innerText = cardData[index].name;
@@ -72,7 +87,7 @@ async function createCardImage(IdCard, fieldSide) {
   cardImage.classList.add("card");
 
   if (fieldSide === playerSides.player1) {
-    
+
     cardImage.addEventListener("mouseover", () => {
       drawSelectCard(IdCard);
     })
