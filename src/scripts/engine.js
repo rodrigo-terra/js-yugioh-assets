@@ -5,7 +5,7 @@ const state = {
     computerScore: 0,
     scoreBox: document.getElementById("score_points"),
   },
-  cardSprite: {
+  cardSprites: {
     avatar: document.getElementById("card-image"),
     name: document.getElementById("card-name"),
     type: document.getElementById("card-type"),
@@ -104,7 +104,7 @@ async function setCardsField(cardId) {
 }
 
 async function drawButton(text) {
-  state.actions.button.innerText = text;
+  state.actions.button.innerText = text.toUpperCase();
   state.actions.button.style.display = "block";
 }
 
@@ -113,18 +113,20 @@ async function updateScore() {
 }
 
 async function checkDuelResults(playerCardId, computerCardId) {
-  let duelResults = "Empate";
+  let duelResults = "draw";
   let playerCard = cardData[playerCardId];
 
   if (playerCard.WinOf.includes(computerCardId)) {
-    duelResults = "Ganhou";
+    duelResults = "win";
     state.score.playerScore++;
   }
 
   if (playerCard.LoseOf.includes(computerCardId)) {
-    duelResults = "Perdeu";
+    duelResults = "lose";
     state.score.computerScore++;
   }
+
+  await playAudio(duelResults)
 
   return duelResults;
 }
@@ -139,9 +141,9 @@ async function removeAllCardsImages() {
 }
 
 async function drawSelectCard(index) {
-  state.cardSprite.avatar.src = cardData[index].img;
-  state.cardSprite.name.innerText = cardData[index].name;
-  state.cardSprite.type.innerText = "Attribute : " + cardData[index].type;
+  state.cardSprites.avatar.src = cardData[index].img;
+  state.cardSprites.name.innerText = cardData[index].name;
+  state.cardSprites.type.innerText = "Attribute : " + cardData[index].type;
 }
 
 async function drawCards(carNumbers, fieldSide) {
@@ -151,6 +153,24 @@ async function drawCards(carNumbers, fieldSide) {
 
     document.getElementById(fieldSide).appendChild(cardImage);
   }
+}
+
+async function resetDuel() {
+  state.cardSprites.avatar.src = "";
+  state.actions.button.style.display = "none";
+
+  state.fieldCards.player.style.display = "none";
+  state.fieldCards.computer.style.display = "none";
+
+  init()
+} 
+
+async function playAudio(status) {
+  const audio = new Audio(`./src/assets/audios/${status}.wav`);
+  
+  try {
+    audio.play();
+  } catch {}
 }
 
 function init() {
